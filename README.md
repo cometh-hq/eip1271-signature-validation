@@ -10,12 +10,12 @@ Simple usage
 import {
   isValidEip1271Signature,
   isValidEip1271SignatureForAllNetworks
-} from '@cometh/eip1271-verification-util'
+} from '@cometh/eip1271-signature-validation'
 import { hashMessage } from 'viem'
 import { MNEMONIC, RPC, EIP712_SAFE_MESSAGE_TYPE } from './constants'
 
 const checkSig = async () => {
-  const signer = ethers.Wallet.fromMnemonic(MNEMONIC)
+  const signer = ethers.Wallet.fromMnemonic(MNEMONIC) // owner of the smart contract wallet
   const messageToSign = '0x123456'
 
   const rpcUrls = [RPC.polygon, RPC.xdai] // Array of RPC URLs to create providers to perform smart contract wallet validation with EIP 1271
