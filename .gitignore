@@ -1,0 +1,14 @@
+# node.js
+
+node_modules/
+yarn-error.log
+
+# OSX
+.DS_STORE
+
+# build
+.env
+dist/
+types/
+
+
