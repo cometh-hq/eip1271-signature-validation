@@ -6,8 +6,7 @@
     "no-loops",
     "prettier",
     "import",
-    "simple-import-sort",
-    "jest"
+    "simple-import-sort"
   ],
   "extends": [
     "eslint:recommended",
@@ -15,13 +14,11 @@
     "plugin:@typescript-eslint/recommended",
     "prettier",
     "plugin:import/recommended",
-    "plugin:import/typescript",
-    "plugin:jest/recommended"
+    "plugin:import/typescript"
   ],
   "rules": {
     "no-console": 1,
     "no-loops/no-loops": 0,
-    "jest/expect-expect": 0,
     "import/no-named-as-default-member": 0,
     "prettier/prettier": 1,
     "simple-import-sort/imports": "error",

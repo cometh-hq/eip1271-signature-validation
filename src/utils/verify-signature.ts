@@ -1,10 +1,10 @@
 import { createPublicClient, http, PublicClient } from 'viem'
 import {
-  mainnet,
   avalanche,
   avalancheFuji,
   gnosis,
   gnosisChiado,
+  mainnet,
   polygon,
   polygonMumbai
 } from 'viem/chains'
@@ -42,8 +42,8 @@ const checkSignatureForAllClients = async (
   )
 }
 
-const getClientsFromRpcUrls = async () => {
-  return Promise.all(
+const getClientsFromRpcUrls = async (): Promise<PublicClient[]> => {
+  const clients = await Promise.all(
     supportedChains.map(async (chain) => {
       const client: PublicClient = createPublicClient({
         chain,
@@ -51,7 +51,7 @@ const getClientsFromRpcUrls = async () => {
       })
       try {
         const chainId = await client.getChainId()
-        if (!!chainId) return client
+        if (chainId) return client
       } catch (e) {
         console.warn(`Client creation for ${chain} got an error`)
       }
@@ -59,6 +59,7 @@ const getClientsFromRpcUrls = async () => {
       return null
     })
   )
+  return clients.flatMap((f) => (f ? [f] : []))
 }
 
 /**
@@ -75,14 +76,13 @@ export const isValidEip1271SignatureForAllNetworks = async (
   if (!walletAddress || !message || !signature) return []
 
   const clients = await getClientsFromRpcUrls()
-  const validClients = clients.flatMap((f) => (!!f ? [f] : []))
   const networkValidSignatures = await checkSignatureForAllClients(
-    validClients,
+    clients,
     walletAddress as `0x${string}`,
     message,
     signature as `0x${string}` | Uint8Array
   )
-  return networkValidSignatures.flatMap((f) => (!!f?.chainId ? [f] : [])) // Filter out failed attempts
+  return networkValidSignatures.flatMap((f) => (f?.chainId ? [f] : [])) // Filter out failed attempts
 }
 
 /**
