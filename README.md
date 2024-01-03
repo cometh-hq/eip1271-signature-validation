@@ -18,13 +18,11 @@ import { MNEMONIC, RPC, EIP712_SAFE_MESSAGE_TYPE } from './constants'
 const checkSig = async () => {
   const account = mnemonicToAccount(MNEMONIC) // owner of the smart contract wallet
 
-  const rpcUrls = [RPC.polygon, RPC.xdai] // Array of RPC URLs to create providers to perform smart contract wallet validation with EIP 1271
   const signature = account.signMessage({
     message: 'Hello world'
   })
 
   const isValidSig = await isValidEip1271Signature(
-    rpcUrls,
     walletAddress,
     message,
     signature
