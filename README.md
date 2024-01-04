@@ -9,12 +9,10 @@ Simple usage
 ```ts
 import {
   isValidEip1271Signature,
-  isValidEip1271SignatureForAllNetworks
-} from '@cometh/eip1271-signature-validation'
-import {
+  isValidEip1271SignatureForAllNetworks,
   mainnet,
   polygon
-} from '@cometh/eip1271-signature-validation/dist/chains'
+} from '@cometh/eip1271-signature-validation'
 import { hashMessage } from 'viem'
 import { mnemonicToAccount } from 'viem/accounts'
 import { MNEMONIC, RPC, EIP712_SAFE_MESSAGE_TYPE } from './constants'
