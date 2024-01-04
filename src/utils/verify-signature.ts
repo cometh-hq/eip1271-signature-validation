@@ -1,23 +1,4 @@
-import { createPublicClient, http, PublicClient } from 'viem'
-import {
-  avalanche,
-  avalancheFuji,
-  gnosis,
-  gnosisChiado,
-  mainnet,
-  polygon,
-  polygonMumbai
-} from 'viem/chains'
-
-const supportedChains = [
-  mainnet,
-  polygon,
-  polygonMumbai,
-  avalanche,
-  avalancheFuji,
-  gnosis,
-  gnosisChiado
-]
+import { Chain, createPublicClient, http, PublicClient } from 'viem'
 
 type INetworkValidSig = { chainId: number | null; valid: boolean }
 
@@ -42,9 +23,11 @@ const checkSignatureForAllClients = async (
   )
 }
 
-const getClientsFromRpcUrls = async (): Promise<PublicClient[]> => {
+const getClientsFromRpcUrls = async (
+  networks: Chain[]
+): Promise<PublicClient[]> => {
   const clients = await Promise.all(
-    supportedChains.map(async (chain) => {
+    networks.map(async (chain) => {
       const client: PublicClient = createPublicClient({
         chain,
         transport: http()
@@ -66,16 +49,20 @@ const getClientsFromRpcUrls = async (): Promise<PublicClient[]> => {
  * @param {string | `0x${string}`} walletAddress The signer address to verify the signature against
  * @param {string} message message used to generate the signature.
  * @param {string | `0x${string}` | Uint8Array} signature The signature to verify as a hex string
+ * @param {Chain[]} networks The network that will be used to verify signature
  * @returns {Promise<INetworkSigValid>} INetworkValidSig is an array of objects { name: NetworksNames, valid: boolean }
  */
 export const isValidEip1271SignatureForAllNetworks = async (
   walletAddress: string | `0x${string}`,
   message: string,
-  signature: string | `0x${string}` | Uint8Array
+  signature: string | `0x${string}` | Uint8Array,
+  networks: Chain[]
 ): Promise<INetworkValidSig[]> => {
+  if (networks.length == 0)
+    throw new Error('You need to specify a network to verify signature')
   if (!walletAddress || !message || !signature) return []
 
-  const clients = await getClientsFromRpcUrls()
+  const clients = await getClientsFromRpcUrls(networks)
   const networkValidSignatures = await checkSignatureForAllClients(
     clients,
     walletAddress as `0x${string}`,
@@ -89,17 +76,20 @@ export const isValidEip1271SignatureForAllNetworks = async (
  * @param {string | `0x${string}`} walletAddress The signer address to verify the signature against
  * @param {string} message message used to generate the signature.
  * @param {string | `0x${string}` | Uint8Array} signature The signature to verify as a hex string
+ * @param {Chain[]} networks The network that will be used to verify signature
  * @returns {Promise<boolean>}
  */
 export const isValidEip1271Signature = async (
   walletAddress: string | `0x${string}`,
   message: string,
-  signature: string | `0x${string}` | Uint8Array
+  signature: string | `0x${string}` | Uint8Array,
+  networks: Chain[]
 ): Promise<boolean> => {
   const validArr = await isValidEip1271SignatureForAllNetworks(
     walletAddress,
     message,
-    signature
+    signature,
+    networks
   )
   return validArr.some((item) => !!item.valid)
 }

@@ -1,6 +1,6 @@
 {
   "name": "@cometh/eip1271-signature-validation",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "description": "EIP1271 signature validation facilitator",
